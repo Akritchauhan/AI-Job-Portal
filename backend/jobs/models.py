@@ -12,3 +12,19 @@ class Job(models.Model):
 
     def __str__(self):
         return self.role
+    
+    
+class Application(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('selected', 'Selected'),
+        ('rejected', 'Rejected'),
+    )
+
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    resume = models.FileField(upload_to='resumes/')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+
+    def __str__(self):
+        return f"{self.student} - {self.job}"
