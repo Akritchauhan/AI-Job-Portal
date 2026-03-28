@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Job
+from .models import Application, Job
 from .serializers import ApplicationSerializer, JobSerializer
 
 # ✅ POST Job (Recruiter)
@@ -49,3 +49,29 @@ def apply_job(request):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors, status=400)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def my_applications(request):
+    if request.user.role != 'student':
+        return Response({"error": "Only students can view their applications"}, status=403)
+    
+    applications = Application.objects.filter(student=request.user)
+    serializer = ApplicationSerializer(applications, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def applicants(request, job_id):
+    if request.user.role != 'recruiter':
+        return Response({"error": "Only recruiters can view applicants"}, status=403)
+    
+    try:
+        job = Job.objects.get(id=job_id, posted_by=request.user)
+    except Job.DoesNotExist:
+        return Response({"error": "Job not found or not yours"}, status=404)
+    
+    applications = Application.objects.filter(job=job)
+    serializer = ApplicationSerializer(applications, many=True)
+    return Response(serializer.data)
