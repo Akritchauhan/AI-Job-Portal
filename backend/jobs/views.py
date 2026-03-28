@@ -9,6 +9,11 @@ from .serializers import JobSerializer
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def post_job(request):
+    
+    # 🔒 Restrict to recruiter
+    if request.user.role != 'recruiter':
+        return Response({"error": "Only recruiters can post jobs"}, status=403)
+
     data = request.data.copy()
     data['posted_by'] = request.user.id
 
@@ -16,7 +21,7 @@ def post_job(request):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=400)
 
 
 # ✅ GET Jobs (Student)
