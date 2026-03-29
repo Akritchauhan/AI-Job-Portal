@@ -25,11 +25,25 @@ def post_job(request):
     return Response(serializer.errors, status=400)
 
 
-# ✅ GET Jobs (Student)
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_jobs(request):
     jobs = Job.objects.all()
+    # 🔍 Filters
+    company = request.GET.get('company')
+    role = request.GET.get('role')
+    search = request.GET.get('search')
+
+    if company:
+        jobs = jobs.filter(company_name__icontains=company)
+
+    if role:
+        jobs = jobs.filter(role__icontains=role)
+
+    if search:
+        jobs = jobs.filter(description__icontains=search)
+
     serializer = JobSerializer(jobs, many=True)
     return Response(serializer.data)
 
