@@ -5,7 +5,7 @@ from rest_framework import status
 from .models import Application, Job
 from .serializers import ApplicationSerializer, JobSerializer
 from .utils import extract_text_from_pdf, calculate_match_score
-
+from .utils import recommend_jobs
 # ✅ POST Job (Recruiter)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -109,3 +109,24 @@ def apply_job(request):
         })
 
     return Response(serializer.errors, status=400)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def recommend_jobs_api(request):
+
+    if request.user.role != 'student':
+        return Response({"error": "Only students can get recommendations"}, status=403)
+
+    resume_file = request.FILES.get('resume')
+
+    if not resume_file:
+        return Response({"error": "Resume required"}, status=400)
+
+    resume_text = extract_text_from_pdf(resume_file)
+
+    jobs = Job.objects.all()
+
+    recommendations = recommend_jobs(resume_text, jobs)
+
+    return Response(recommendations)
