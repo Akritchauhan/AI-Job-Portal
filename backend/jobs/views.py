@@ -130,3 +130,21 @@ def recommend_jobs_api(request):
     recommendations = recommend_jobs(resume_text, jobs)
 
     return Response(recommendations)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def applicants(request, job_id):
+
+    if request.user.role != 'recruiter':
+        return Response({"error": "Only recruiters can view applicants"}, status=403)
+
+    try:
+        job = Job.objects.get(id=job_id, posted_by=request.user)
+    except Job.DoesNotExist:
+        return Response({"error": "Job not found or not yours"}, status=404)
+
+    # 🔥 Order by AI score (highest first)
+    applications = Application.objects.filter(job=job).order_by('-match_score')
+
+    serializer = ApplicationSerializer(applications, many=True)
+    return Response(serializer.data)
