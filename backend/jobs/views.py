@@ -148,3 +148,29 @@ def applicants(request, job_id):
 
     serializer = ApplicationSerializer(applications, many=True)
     return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_status(request, app_id):
+
+    if request.user.role != 'recruiter':
+        return Response({"error": "Only recruiters can update status"}, status=403)
+
+    try:
+        application = Application.objects.get(id=app_id)
+    except Application.DoesNotExist:
+        return Response({"error": "Application not found"}, status=404)
+
+    # 🔒 Ensure recruiter owns the job
+    if application.job.posted_by != request.user:
+        return Response({"error": "Not authorized"}, status=403)
+
+    new_status = request.data.get('status')
+
+    if new_status not in ['selected', 'rejected']:
+        return Response({"error": "Invalid status"}, status=400)
+
+    application.status = new_status
+    application.save()
+
+    return Response({"message": "Status updated", "status": new_status})
