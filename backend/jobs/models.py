@@ -25,6 +25,7 @@ class Application(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     resume = models.FileField(upload_to='resumes/')
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    match_score = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.student} - {self.job}"

@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Application, Job
 from .serializers import ApplicationSerializer, JobSerializer
+from .utils import extract_text_from_pdf, calculate_match_score
 
 # ✅ POST Job (Recruiter)
 @api_view(['POST'])
@@ -75,3 +76,36 @@ def applicants(request, job_id):
     applications = Application.objects.filter(job=job)
     serializer = ApplicationSerializer(applications, many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def apply_job(request):
+
+    if request.user.role != 'student':
+        return Response({"error": "Only students can apply"}, status=403)
+
+    data = request.data.copy()
+    data['student'] = request.user.id
+
+    serializer = ApplicationSerializer(data=data)
+    
+    if serializer.is_valid():
+        application = serializer.save()
+
+        # 🔹 AI Logic
+        resume_file = application.resume
+        resume_text = extract_text_from_pdf(resume_file)
+
+        job_description = application.job.description
+
+        score = calculate_match_score(resume_text, job_description)
+
+        application.match_score = score
+        application.save()
+
+        return Response({
+            "message": "Applied successfully",
+            "match_score": score
+        })
+
+    return Response(serializer.errors, status=400)
