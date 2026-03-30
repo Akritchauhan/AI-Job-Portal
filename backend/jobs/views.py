@@ -221,3 +221,14 @@ def apply_job(request, job_id):
         "message": "Applied successfully",
         "match_score": score
     })
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def my_applications(request):
+
+    if request.user.role != 'student':
+        return Response({"error": "Only students allowed"}, status=403)
+
+    applications = Application.objects.filter(student=request.user)
+
+    serializer = ApplicationSerializer(applications, many=True)
+    return Response(serializer.data)

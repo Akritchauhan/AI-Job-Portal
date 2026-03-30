@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import { Link } from "react-router-dom";      
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [file, setFile] = useState(null);
@@ -56,7 +56,7 @@ export default function Jobs() {
   return (
     <div>
       <h2>Jobs</h2>
-
+      <Link to="/my-applications">View My Applications</Link>
       {jobs.map((job) => (
         <div key={job.id} style={{ marginBottom: "20px" }}>
           <h3>{job.role}</h3>
