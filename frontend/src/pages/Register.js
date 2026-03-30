@@ -14,12 +14,14 @@ export default function Register() {
 
   const handleRegister = async () => {
     try {
-      const res = await axios.post("http://127.0.0.1:8000/api/register/", data);
-      console.log(res.data);
+      await axios.post("http://127.0.0.1:8000/api/register/", data);
       alert("Registered successfully");
     } catch (err) {
-      console.log(err.response.data); // 🔥 IMPORTANT
-      alert("Registration failed");
+      if (err.response) {
+        alert("Registration failed: " + JSON.stringify(err.response.data));
+      } else {
+        alert("Server not reachable");
+      }
     }
   };
 
@@ -28,7 +30,13 @@ export default function Register() {
       <h2>Register</h2>
 
       <input name="username" placeholder="Username" onChange={handleChange} />
-      <input name="password" type="password" placeholder="Password" onChange={handleChange} />
+
+      <input
+        name="password"
+        type="password"
+        placeholder="Password"
+        onChange={handleChange}
+      />
 
       <select name="role" onChange={handleChange}>
         <option value="student">Student</option>

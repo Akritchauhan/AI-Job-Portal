@@ -10,4 +10,5 @@ urlpatterns = [
     path('applicants/<int:job_id>/', applicants),
     path('recommend/', recommend_jobs_api),
     path('update-status/<int:app_id>/', update_status),
+    path('apply/<int:job_id>/', apply_job),
 ]

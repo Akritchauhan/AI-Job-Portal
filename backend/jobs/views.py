@@ -188,3 +188,36 @@ def update_status(request, app_id):
     application.save()
 
     return Response({"message": "Status updated", "status": new_status})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def apply_job(request, job_id):
+
+    if request.user.role != 'student':
+        return Response({"error": "Only students can apply"}, status=403)
+
+    try:
+        job = Job.objects.get(id=job_id)
+    except Job.DoesNotExist:
+        return Response({"error": "Job not found"}, status=404)
+
+    resume_file = request.FILES.get('resume')
+
+    if not resume_file:
+        return Response({"error": "Resume required"}, status=400)
+
+    # 🔥 Extract text + calculate score
+    resume_text = extract_text_from_pdf(resume_file)
+    score = calculate_match_score(resume_text, job.description)
+
+    application = Application.objects.create(
+        student=request.user,
+        job=job,
+        resume=resume_file,
+        match_score=score
+    )
+
+    return Response({
+        "message": "Applied successfully",
+        "match_score": score
+    })
