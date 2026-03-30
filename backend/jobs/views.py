@@ -232,3 +232,15 @@ def my_applications(request):
 
     serializer = ApplicationSerializer(applications, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def my_jobs(request):
+
+    if request.user.role != 'recruiter':
+        return Response({"error": "Only recruiters allowed"}, status=403)
+
+    jobs = Job.objects.filter(posted_by=request.user)
+
+    serializer = JobSerializer(jobs, many=True)
+    return Response(serializer.data)

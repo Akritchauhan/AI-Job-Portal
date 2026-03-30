@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import applicants, post_job, get_jobs, apply_job,my_applications, recommend_jobs_api, update_status
+from .views import applicants, my_jobs, post_job, get_jobs, apply_job,my_applications, recommend_jobs_api, update_status
 from rest_framework.decorators import api_view, permission_classes  
 
 urlpatterns = [
@@ -12,4 +12,5 @@ urlpatterns = [
     path('update-status/<int:app_id>/', update_status),
     path('apply/<int:job_id>/', apply_job),
     path('my-applications/', my_applications),
+    path('my-jobs/', my_jobs),
 ]
