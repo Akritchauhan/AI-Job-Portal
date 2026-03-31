@@ -4,9 +4,11 @@ import Register from "./pages/Register";
 import Jobs from "./pages/Jobs";
 import MyApplications from "./pages/Myapplications";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
+import Navbar from "./Components/Navbar";
 function App() {
   return (
     <BrowserRouter>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />

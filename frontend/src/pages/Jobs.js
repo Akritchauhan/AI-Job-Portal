@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";      
+import { Link } from "react-router-dom";  
+import "./Jobs.css";  
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [file, setFile] = useState(null);
@@ -58,22 +59,20 @@ export default function Jobs() {
       <h2>Jobs</h2>
       <Link to="/my-applications">View My Applications</Link>
       {jobs.map((job) => (
-        <div key={job.id} style={{ marginBottom: "20px" }}>
-          <h3>{job.role}</h3>
-          <p><strong>Company:</strong> {job.company_name}</p>
-          <p>{job.description}</p>
-
-          <input
-            type="file"
-            onChange={(e) => setFile(e.target.files[0])}
-          />
-
-          <button onClick={() => handleApply(job.id)}>
-            Apply
-          </button>
-
-          <hr />
-        </div>
+        <div key={job.id} className="job-card">
+        <h3>{job.role}</h3>
+        <p><strong>Company:</strong> {job.company_name}</p>
+        <p>{job.description}</p>
+      
+        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+      
+        <button
+          className="apply-btn"
+          onClick={() => handleApply(job.id)}
+        >
+          Apply
+        </button>
+      </div>
       ))}
     </div>
   );

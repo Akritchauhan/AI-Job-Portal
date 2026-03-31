@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import "./RecruiterDashboard.css";
 
 export default function RecruiterDashboard() {
   const [jobs, setJobs] = useState([]);
@@ -35,28 +36,31 @@ export default function RecruiterDashboard() {
   };
 
   return (
-    <div>
-      <h2>Recruiter Dashboard</h2>
+    <div className="recruiter-container">
+  <h2>Recruiter Dashboard</h2>
 
-      <h3>Your Jobs</h3>
-      {jobs.map((job) => (
-        <div key={job.id}>
-          <p>{job.role} - {job.company_name}</p>
-          <button onClick={() => getApplicants(job.id)}>
-            View Applicants
-          </button>
-        </div>
-      ))}
+  <h3>Your Jobs</h3>
+  {jobs.map((job) => (
+    <div key={job.id} className="job-card">
+      <p>{job.role} - {job.company_name}</p>
 
-      <h3>Applicants</h3>
-      {applicants.map((app) => (
-        <div key={app.id}>
-          <p><strong>Student:</strong> {app.student}</p>
-          <p><strong>Match Score:</strong> {app.match_score}</p>
-          <p><strong>Status:</strong> {app.status}</p>
-          <hr />
-        </div>
-      ))}
+      <button
+        className="view-btn"
+        onClick={() => getApplicants(job.id)}
+      >
+        View Applicants
+      </button>
     </div>
+  ))}
+
+  <h3>Applicants</h3>
+  {applicants.map((app) => (
+    <div key={app.id} className="applicant-card">
+      <p><strong>Student:</strong> {app.student}</p>
+      <p><strong>Match Score:</strong> {app.match_score}</p>
+      <p><strong>Status:</strong> {app.status}</p>
+    </div>
+  ))}
+</div>
   );
 }

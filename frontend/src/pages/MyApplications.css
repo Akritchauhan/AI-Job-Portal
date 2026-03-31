@@ -1,0 +1,27 @@
+.app-container {
+    padding: 20px;
+  }
+  
+  .app-card {
+    border: 1px solid #ccc;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .app-status {
+    font-weight: bold;
+  }
+  
+  .status-pending {
+    color: orange;
+  }
+  
+  .status-selected {
+    color: green;
+  }
+  
+  .status-rejected {
+    color: red;
+  }

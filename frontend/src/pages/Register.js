@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import "./Register.css";
 
 export default function Register() {
   const [data, setData] = useState({
@@ -26,10 +27,14 @@ export default function Register() {
   };
 
   return (
-    <div>
+    <div className="auth-container">
       <h2>Register</h2>
 
-      <input name="username" placeholder="Username" onChange={handleChange} />
+      <input
+        name="username"
+        placeholder="Username"
+        onChange={handleChange}
+      />
 
       <input
         name="password"
@@ -43,7 +48,9 @@ export default function Register() {
         <option value="recruiter">Recruiter</option>
       </select>
 
-      <button onClick={handleRegister}>Register</button>
+      <button className="auth-btn" onClick={handleRegister}>
+        Register
+      </button>
     </div>
   );
 }
