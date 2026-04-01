@@ -1,40 +1,234 @@
 .app-container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 0 20px;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.app-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.app-header h2 {
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  color: var(--text-main);
+}
+
+.app-header p {
+  color: var(--text-muted);
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filter-badge {
+  padding: 8px 16px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.filter-badge:hover,
+.filter-badge.active {
+  background-color: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.applications-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.app-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 1.75rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.75rem;
+  align-items: start;
+  transition: all var(--transition-base);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.app-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: var(--primary-light);
+}
+
+.app-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.app-job-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.app-company {
+  color: var(--primary);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.app-meta {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.app-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-meta-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.app-meta-value {
+  color: var(--text-dark);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.app-match-score {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.app-status-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.app-status {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.status-pending {
+  background-color: var(--warning-light);
+  color: #b45309;
+}
+
+.status-selected {
+  background-color: var(--success-light);
+  color: #065f46;
+  background: linear-gradient(135deg, var(--success-light) 0%, #a7f3d0 100%);
+}
+
+.status-rejected {
+  background-color: var(--danger-light);
+  color: #7f1d1d;
+}
+
+.status-reviewing {
+  background-color: var(--info);
+  color: white;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 2px dashed var(--border-color);
+  color: var(--text-muted);
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state-text {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-subtext {
+  font-size: 0.95rem;
+  color: var(--text-light);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app-container {
+    margin: 20px auto;
+  }
+
+  .app-header h2 {
+    font-size: 1.5rem;
+  }
+
   .app-card {
-    background: var(--surface); /* Referencing variables from index.css */
-    border: 1px solid var(--border);
-    padding: 20px;
-    margin-bottom: 16px;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    grid-template-columns: 1fr;
   }
-  
-  .app-status {
+
+  .app-status-container {
+    align-items: flex-start;
+  }
+
+  .app-meta {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .filters {
+    gap: 0.5rem;
+  }
+
+  .filter-badge {
     font-size: 0.85rem;
-    font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 20px;
-    text-transform: uppercase;
+    padding: 6px 12px;
   }
-  
-  .status-pending {
-    background-color: #fef3c7;
-    color: #92400e;
-  }
-  
-  .status-selected {
-    background-color: #d1fae5;
-    color: #065f46;
-  }
-  
-  .status-rejected {
-    background-color: #fee2e2;
-    color: #991b1b;
-  }
+}

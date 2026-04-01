@@ -29,14 +29,37 @@ export default function Login() {
 
   return (
     <div className="auth-container">
-    <h2>Login</h2>
-  
-    <input name="username" placeholder="Username" onChange={handleChange} />
-    <input name="password" type="password" placeholder="Password" onChange={handleChange} />
-  
-    <button className="auth-btn" onClick={handleLogin}>
-      Login
-    </button>
-  </div>
+      <h2>Welcome Back</h2>
+      <p className="subtitle">Sign in to your account</p>
+      
+      <div className="form-group">
+        <label htmlFor="username">Username</label>
+        <input 
+          id="username"
+          name="username" 
+          placeholder="Enter your username" 
+          onChange={handleChange} 
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="password">Password</label>
+        <input 
+          id="password"
+          name="password" 
+          type="password" 
+          placeholder="Enter your password" 
+          onChange={handleChange} 
+        />
+      </div>
+    
+      <button className="auth-btn" onClick={handleLogin}>
+        Sign In
+      </button>
+
+      <p className="link-text">
+        Don't have an account? <Link to="/register">Register here</Link>
+      </p>
+    </div>
   );
 }

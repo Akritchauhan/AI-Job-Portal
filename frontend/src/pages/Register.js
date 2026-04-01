@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 import "./Register.css";
 
 export default function Register() {
@@ -9,6 +10,8 @@ export default function Register() {
     role: "student",
   });
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
@@ -16,7 +19,8 @@ export default function Register() {
   const handleRegister = async () => {
     try {
       await axios.post("http://127.0.0.1:8000/api/register/", data);
-      alert("Registered successfully");
+      alert("Registered successfully! Please log in.");
+      navigate("/");
     } catch (err) {
       if (err.response) {
         alert("Registration failed: " + JSON.stringify(err.response.data));
@@ -28,29 +32,45 @@ export default function Register() {
 
   return (
     <div className="auth-container">
-      <h2>Register</h2>
+      <h2>Create Account</h2>
+      <p className="subtitle">Join our platform today</p>
 
-      <input
-        name="username"
-        placeholder="Username"
-        onChange={handleChange}
-      />
+      <div className="form-group">
+        <label htmlFor="username">Username</label>
+        <input
+          id="username"
+          name="username"
+          placeholder="Choose a username"
+          onChange={handleChange}
+        />
+      </div>
 
-      <input
-        name="password"
-        type="password"
-        placeholder="Password"
-        onChange={handleChange}
-      />
+      <div className="form-group">
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Create a strong password"
+          onChange={handleChange}
+        />
+      </div>
 
-      <select name="role" onChange={handleChange}>
-        <option value="student">Student</option>
-        <option value="recruiter">Recruiter</option>
-      </select>
+      <div className="form-group">
+        <label htmlFor="role">Account Type</label>
+        <select id="role" name="role" onChange={handleChange}>
+          <option value="student">Student / Job Seeker</option>
+          <option value="recruiter">Recruiter / Employer</option>
+        </select>
+      </div>
 
       <button className="auth-btn" onClick={handleRegister}>
-        Register
+        Create Account
       </button>
+
+      <p className="link-text">
+        Already have an account? <Link to="/">Sign in here</Link>
+      </p>
     </div>
   );
 }

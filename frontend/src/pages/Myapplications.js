@@ -4,6 +4,7 @@ import "./MyApplications.css";
 
 export default function MyApplications() {
   const [applications, setApplications] = useState([]);
+  const [filterStatus, setFilterStatus] = useState("all");
 
   useEffect(() => {
     axios
@@ -20,20 +21,90 @@ export default function MyApplications() {
       });
   }, []);
 
+  const filteredApplications = 
+    filterStatus === "all"
+      ? applications
+      : applications.filter((app) => app.status.toLowerCase() === filterStatus);
+
+  const getStatusClass = (status) => {
+    return `status-${status.toLowerCase()}`;
+  };
+
+  const getStatusLabel = (status) => {
+    return status.charAt(0).toUpperCase() + status.slice(1);
+  };
+
+  const uniqueStatuses = ["all", ...new Set(applications.map(app => app.status.toLowerCase()))];
+
   return (
     <div className="app-container">
-  <h2>My Applications</h2>
+      <div className="app-header">
+        <h2>My Applications</h2>
+        <p>Track the status of your job applications</p>
+      </div>
 
-  {applications.map((app) => (
-    <div key={app.id} className="app-card">
-      <p><strong>Job ID:</strong> {app.job}</p>
-      <p><strong>Match Score:</strong> {app.match_score}</p>
+      {applications.length > 0 && (
+        <div className="filters">
+          {uniqueStatuses.map((status) => (
+            <button
+              key={status}
+              className={`filter-badge ${filterStatus === status ? "active" : ""}`}
+              onClick={() => setFilterStatus(status)}
+            >
+              {status === "all" ? "All Applications" : getStatusLabel(status)}{" "}
+              ({status === "all" 
+                ? applications.length 
+                : applications.filter((a) => a.status.toLowerCase() === status).length})
+            </button>
+          ))}
+        </div>
+      )}
 
-      <p className={`app-status status-${app.status}`}>
-        Status: {app.status}
-      </p>
+      {filteredApplications.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-state-icon">📭</div>
+          <p className="empty-state-text">
+            {applications.length === 0 
+              ? "You haven't applied to any jobs yet" 
+              : `No applications with status "${getStatusLabel(filterStatus)}"`}
+          </p>
+          <p className="empty-state-subtext">
+            {applications.length === 0 
+              ? "Explore job opportunities and submit your applications!" 
+              : "Try a different filter"}
+          </p>
+        </div>
+      ) : (
+        <div className="applications-list">
+          {filteredApplications.map((app) => (
+            <div key={app.id} className="app-card">
+              <div className="app-details">
+                <h3 className="app-job-title">Job #{app.job}</h3>
+                <p className="app-company">Position at Company</p>
+                <div className="app-meta">
+                  <div className="app-meta-item">
+                    <span className="app-meta-label">Match Score</span>
+                    <span className="app-meta-value app-match-score">
+                      {app.match_score || "N/A"}%
+                    </span>
+                  </div>
+                  <div className="app-meta-item">
+                    <span className="app-meta-label">Application Date</span>
+                    <span className="app-meta-value">
+                      {new Date().toLocaleDateString()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="app-status-container">
+                <span className={`app-status ${getStatusClass(app.status)}`}>
+                  {getStatusLabel(app.status)}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
-  ))}
-</div>
   );
 }

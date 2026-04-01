@@ -1,41 +1,226 @@
 .recruiter-container {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 0 24px;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.recruiter-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.recruiter-header h2 {
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  color: var(--text-main);
+}
+
+.recruiter-header p {
+  color: var(--text-muted);
+}
+
+.recruiter-section {
+  margin-bottom: 3rem;
+}
+
+.recruiter-section h3 {
+  margin-bottom: 1.5rem;
+  font-size: 1.4rem;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.jobs-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.job-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  
-  .job-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 24px;
-    margin-bottom: 20px;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .view-btn {
-    padding: 8px 16px;
-    margin-top: 12px;
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+}
+
+.job-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: var(--primary-light);
+}
+
+.job-card p {
+  margin: 0.5rem 0;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.job-card .job-role {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.job-card .company-name {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.view-btn {
+  margin-top: 1rem;
+  padding: 10px 20px;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.view-btn:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+  transform: translateY(-1px);
+}
+
+.view-btn:active {
+  transform: translateY(0);
+}
+
+.applicants-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.applicant-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1.5rem;
+  transition: all var(--transition-base);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.applicant-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-light);
+}
+
+.applicant-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.applicant-name {
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 1rem;
+}
+
+.applicant-detail {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.match-score {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
+.applicant-status {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-pending {
+  background-color: var(--warning-light);
+  color: #b45309;
+}
+
+.status-selected {
+  background-color: var(--success-light);
+  color: #065f46;
+}
+
+.status-rejected {
+  background-color: var(--danger-light);
+  color: #7f1d1d;
+}
+
+.status-reviewing {
+  background-color: var(--info);
+  color: white;
+  opacity: 0.9;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .recruiter-container {
+    margin: 20px auto;
   }
-  
-  .view-btn:hover {
-    background-color: var(--primary-hover);
+
+  .recruiter-header h2 {
+    font-size: 1.5rem;
   }
-  
+
+  .recruiter-section h3 {
+    font-size: 1.2rem;
+  }
+
   .applicant-card {
-    border: 1px solid var(--border);
-    background-color: var(--background);
-    padding: 16px;
-    margin-top: 12px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    grid-template-columns: 1fr;
   }
+
+  .applicant-card > :last-child {
+    width: 100%;
+  }
+}
