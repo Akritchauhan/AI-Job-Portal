@@ -6,25 +6,22 @@ from .models import Application, Job
 from .serializers import ApplicationSerializer, JobSerializer
 from .utils import extract_text_from_pdf, calculate_match_score
 from .utils import recommend_jobs
-# ✅ POST Job (Recruiter)
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def post_job(request):
-    
-    # 🔒 Restrict to recruiter
+
     if request.user.role != 'recruiter':
         return Response({"error": "Only recruiters can post jobs"}, status=403)
 
-    data = request.data.copy()
-    data['posted_by'] = request.user.id
+    serializer = JobSerializer(data=request.data)
 
-    serializer = JobSerializer(data=data)
     if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=400)
+        serializer.save(posted_by=request.user)
+        return Response(serializer.data, status=201)
 
-
+    return Response({"error": serializer.errors}, status=400)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -48,28 +45,11 @@ def get_jobs(request):
     return Response(serializer.data)
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def apply_job(request):
-    
-    # 🔒 Only student can apply
-    if request.user.role != 'student':
-        return Response({"error": "Only students can apply"}, status=403)
-
-    data = request.data.copy()
-    data['student'] = request.user.id
-
-    serializer = ApplicationSerializer(data=data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=400)
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def my_applications(request):
     if request.user.role != 'student':
-        return Response({"error": "Only students can view their applications"}, status=403)
+        return Response({"error": "Only students allowed"}, status=403)
     
     applications = Application.objects.filter(student=request.user)
     serializer = ApplicationSerializer(applications, many=True)
@@ -86,87 +66,16 @@ def applicants(request, job_id):
         job = Job.objects.get(id=job_id, posted_by=request.user)
     except Job.DoesNotExist:
         return Response({"error": "Job not found or not yours"}, status=404)
-    
-    applications = Application.objects.filter(job=job)
-    serializer = ApplicationSerializer(applications, many=True)
-    return Response(serializer.data)
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def apply_job(request):
-
-    if request.user.role != 'student':
-        return Response({"error": "Only students can apply"}, status=403)
-
-    data = request.data.copy()
-    data['student'] = request.user.id
-
-    serializer = ApplicationSerializer(data=data)
-    
-    if serializer.is_valid():
-        application = serializer.save()
-
-        # 🔹 AI Logic
-        resume_file = application.resume
-        resume_text = extract_text_from_pdf(resume_file)
-
-        job_description = application.job.description
-
-        score = calculate_match_score(resume_text, job_description)
-
-        application.match_score = score
-        application.save()
-
-        return Response({
-            "message": "Applied successfully",
-            "match_score": score
-        })
-
-    return Response(serializer.errors, status=400)
-
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def recommend_jobs_api(request):
-
-    if request.user.role != 'student':
-        return Response({"error": "Only students can get recommendations"}, status=403)
-
-    resume_file = request.FILES.get('resume')
-
-    if not resume_file:
-        return Response({"error": "Resume required"}, status=400)
-
-    resume_text = extract_text_from_pdf(resume_file)
-
-    jobs = Job.objects.all()
-
-    recommendations = recommend_jobs(resume_text, jobs)
-
-    return Response(recommendations)
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def applicants(request, job_id):
-
-    if request.user.role != 'recruiter':
-        return Response({"error": "Only recruiters can view applicants"}, status=403)
-
-    try:
-        job = Job.objects.get(id=job_id, posted_by=request.user)
-    except Job.DoesNotExist:
-        return Response({"error": "Job not found or not yours"}, status=404)
 
     # 🔥 Order by AI score (highest first)
     applications = Application.objects.filter(job=job).order_by('-match_score')
-
     serializer = ApplicationSerializer(applications, many=True)
     return Response(serializer.data)
+
 
 @api_view(['PATCH', 'PUT'])
 @permission_classes([IsAuthenticated])
 def update_status(request, app_id):
-
     if request.user.role != 'recruiter':
         return Response({"error": "Only recruiters can update status"}, status=403)
 
@@ -192,10 +101,10 @@ def update_status(request, app_id):
 
     return Response({"message": "Status updated", "status": new_status})
 
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def apply_job(request, job_id):
-
     if request.user.role != 'student':
         return Response({"error": "Only students can apply"}, status=403)
 
@@ -224,26 +133,14 @@ def apply_job(request, job_id):
         "message": "Applied successfully",
         "match_score": score
     })
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def my_applications(request):
 
-    if request.user.role != 'student':
-        return Response({"error": "Only students allowed"}, status=403)
-
-    applications = Application.objects.filter(student=request.user)
-
-    serializer = ApplicationSerializer(applications, many=True)
-    return Response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def my_jobs(request):
-
     if request.user.role != 'recruiter':
         return Response({"error": "Only recruiters allowed"}, status=403)
 
     jobs = Job.objects.filter(posted_by=request.user)
-
     serializer = JobSerializer(jobs, many=True)
     return Response(serializer.data)

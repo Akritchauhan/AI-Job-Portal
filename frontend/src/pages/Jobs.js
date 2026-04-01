@@ -8,6 +8,8 @@ export default function Jobs() {
   const [file, setFile] = useState(null);
   const [sortBy, setSortBy] = useState("recent");
   const [selectedJobForApply, setSelectedJobForApply] = useState(null);
+  const [expandedCompany, setExpandedCompany] = useState(null);
+  const [selectedJobDetail, setSelectedJobDetail] = useState(null);
 
   // 🔥 Fetch jobs
   useEffect(() => {
@@ -43,6 +45,18 @@ export default function Jobs() {
         break;
     }
     return sorted;
+  };
+
+  // 🔥 Group jobs by company
+  const getJobsByCompany = () => {
+    const grouped = {};
+    getSortedJobs().forEach(job => {
+      if (!grouped[job.company_name]) {
+        grouped[job.company_name] = [];
+      }
+      grouped[job.company_name].push(job);
+    });
+    return grouped;
   };
 
   // 🔥 Apply function
@@ -112,58 +126,128 @@ export default function Jobs() {
           <div className="empty-state-icon">💼</div>
           <p>No jobs available at the moment. Check back soon!</p>
         </div>
-      ) : (
+      ) : selectedJobDetail ? (
         <div className="jobs-list">
-          {sortedJobs.map((job) => (
-            <div key={job.id} className="job-card">
-              <div className="job-header">
-                <h3 className="job-role">{job.role}</h3>
-                <p className="job-company">🏢 {job.company_name}</p>
-                {job.match_score !== null && job.match_score !== undefined && (
-                  <div className="match-score-badge">
-                    Match: {job.match_score}%
-                  </div>
-                )}
-              </div>
+          <div className="job-detail-card">
+            <button 
+              className="back-btn"
+              onClick={() => setSelectedJobDetail(null)}
+            >
+              ← Back to Companies
+            </button>
 
-              <div className="job-description">
-                {job.description}
-              </div>
+            <div className="job-detail-header">
+              <h2 className="job-detail-title">{selectedJobDetail.role}</h2>
+              <p className="job-detail-company">🏢 {selectedJobDetail.company_name}</p>
+              <div className="job-detail-id">Job ID: #{selectedJobDetail.id}</div>
+            </div>
 
-              <div className="job-apply-section">
-                {selectedJobForApply === job.id ? (
-                  <div className="file-input-wrapper">
-                    <input 
-                      type="file" 
-                      onChange={(e) => setFile(e.target.files[0])}
-                      accept=".pdf,.doc,.docx"
-                      title="Upload your resume (PDF, DOC, DOCX)"
-                    />
-                    <button
-                      className="apply-btn"
-                      onClick={() => handleApply(job.id)}
-                      disabled={!file}
-                    >
-                      ✓ Apply Now
-                    </button>
-                    <button
-                      className="cancel-btn"
-                      onClick={() => {
-                        setSelectedJobForApply(null);
-                        setFile(null);
-                      }}
-                    >
-                      ✕ Cancel
-                    </button>
-                  </div>
-                ) : (
+            {selectedJobDetail.description && (
+              <div className="job-detail-section">
+                <h3 className="job-detail-section-title">📝 Description</h3>
+                <p className="job-detail-description">{selectedJobDetail.description}</p>
+              </div>
+            )}
+
+            {selectedJobDetail.skills_required && (
+              <div className="job-detail-section">
+                <h3 className="job-detail-section-title">⚡ Required Skills</h3>
+                <div className="skills-list">
+                  {selectedJobDetail.skills_required.split(',').map((skill, idx) => (
+                    <span key={idx} className="skill-tag">{skill.trim()}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedJobDetail.deadline && (
+              <div className="job-detail-section">
+                <p><strong>📅 Application Deadline:</strong> {new Date(selectedJobDetail.deadline).toLocaleDateString()}</p>
+              </div>
+            )}
+
+            {selectedJobDetail.match_score !== null && selectedJobDetail.match_score !== undefined && (
+              <div className="job-detail-section">
+                <p><strong>🎯 Your Match Score:</strong> <span className="job-item-match">{selectedJobDetail.match_score}%</span></p>
+              </div>
+            )}
+
+            <div className="job-apply-section">
+              {selectedJobForApply === selectedJobDetail.id ? (
+                <div className="file-input-wrapper">
+                  <input 
+                    type="file" 
+                    onChange={(e) => setFile(e.target.files[0])}
+                    accept=".pdf,.doc,.docx"
+                    title="Upload your resume (PDF, DOC, DOCX)"
+                  />
                   <button
-                    className="apply-btn primary"
-                    onClick={() => setSelectedJobForApply(job.id)}
+                    className="apply-btn"
+                    onClick={() => handleApply(selectedJobDetail.id)}
+                    disabled={!file}
                   >
-                    Apply To This Job
+                    ✓ Apply Now
                   </button>
-                )}
+                  <button
+                    className="cancel-btn"
+                    onClick={() => {
+                      setSelectedJobForApply(null);
+                      setFile(null);
+                    }}
+                  >
+                    ✕ Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className="apply-btn primary"
+                  onClick={() => setSelectedJobForApply(selectedJobDetail.id)}
+                >
+                  Apply To This Job
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="companies-list">
+          {Object.entries(getJobsByCompany()).map(([company, companyJobs]) => (
+            <div key={company} className="company-group">
+              <button 
+                className={`company-header ${expandedCompany === company ? 'expanded' : ''}`}
+                onClick={() => setExpandedCompany(expandedCompany === company ? null : company)}
+              >
+                <span className="company-name-header">🏢 {company}</span>
+                <div className="company-header-right">
+                  <span className="job-count-badge">{companyJobs.length}</span>
+                  <span className="expand-icon">{expandedCompany === company ? '▼' : '▶'}</span>
+                </div>
+              </button>
+
+              <div className={`jobs-in-company ${expandedCompany !== company ? 'collapsed' : ''}`}>
+                {companyJobs.map(job => (
+                  <div key={job.id} className="job-item">
+                    <div className="job-item-content">
+                      <div className="job-item-title">{job.role}</div>
+                      <div className="job-item-meta">
+                        {job.deadline && (
+                          <span className="job-item-meta-item">📅 {new Date(job.deadline).toLocaleDateString()}</span>
+                        )}
+                        {job.match_score !== null && job.match_score !== undefined && (
+                          <span className="job-item-meta-item">
+                            Match Score: <span className="job-item-match">{job.match_score}%</span>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <button 
+                      className="view-details-btn"
+                      onClick={() => setSelectedJobDetail(job)}
+                    >
+                      View Details
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
           ))}

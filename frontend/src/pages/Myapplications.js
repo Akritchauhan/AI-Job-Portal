@@ -31,7 +31,12 @@ export default function MyApplications() {
   };
 
   const getStatusLabel = (status) => {
-    return status.charAt(0).toUpperCase() + status.slice(1);
+    return status
+      .toLowerCase()
+      .replace(/_/g, ' ')
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   };
 
   const uniqueStatuses = ["all", ...new Set(applications.map(app => app.status.toLowerCase()))];
@@ -79,19 +84,19 @@ export default function MyApplications() {
           {filteredApplications.map((app) => (
             <div key={app.id} className="app-card">
               <div className="app-details">
-                <h3 className="app-job-title">Job #{app.job}</h3>
-                <p className="app-company">Position at Company</p>
+                <h3 className="app-job-title">{app.job.role}</h3>
+                <p className="app-company">{app.job.company_name}</p>
                 <div className="app-meta">
                   <div className="app-meta-item">
-                    <span className="app-meta-label">Match Score</span>
+                    <span className="app-meta-label">MATCH SCORE</span>
                     <span className="app-meta-value app-match-score">
-                      {app.match_score || "N/A"}%
+                      {app.match_score !== null ? `${app.match_score}%` : "N/A%"}
                     </span>
                   </div>
                   <div className="app-meta-item">
-                    <span className="app-meta-label">Application Date</span>
+                    <span className="app-meta-label">APPLICATION DATE</span>
                     <span className="app-meta-value">
-                      {new Date().toLocaleDateString()}
+                      {new Date(app.applied_at).toLocaleDateString()}
                     </span>
                   </div>
                 </div>

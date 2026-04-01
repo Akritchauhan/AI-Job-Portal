@@ -144,35 +144,52 @@
 .app-status {
   font-size: 0.85rem;
   font-weight: 700;
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 10px 18px;
+  border-radius: 25px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.app-status:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .status-pending {
-  background-color: var(--warning-light);
-  color: #b45309;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #92400e;
 }
 
-.status-selected {
-  background-color: var(--success-light);
+.status-in_review {
+  background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
+  color: #1e40af;
+  font-weight: 800;
+}
+
+.status-shortlisted {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
   color: #065f46;
-  background: linear-gradient(135deg, var(--success-light) 0%, #a7f3d0 100%);
 }
 
 .status-rejected {
-  background-color: var(--danger-light);
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
   color: #7f1d1d;
 }
 
-.status-reviewing {
-  background-color: var(--info);
-  color: white;
+.status-hired {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  color: #15803d;
+}
+
+.status-selected {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: #065f46;
 }
 
 .empty-state {

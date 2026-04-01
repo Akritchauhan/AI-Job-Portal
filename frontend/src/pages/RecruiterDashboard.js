@@ -13,6 +13,7 @@ export default function RecruiterDashboard() {
     company_name: "",
     description: "",
     skills_required: "",
+    deadline: "",
   });
 
   // 🔥 Fetch recruiter jobs
@@ -35,8 +36,8 @@ export default function RecruiterDashboard() {
 
   // 🔥 Create new job
   const handleCreateJob = async () => {
-    if (!newJob.role || !newJob.company_name || !newJob.description || !newJob.skills_required) {
-      alert("Please fill all fields including skills");
+    if (!newJob.role || !newJob.company_name || !newJob.description || !newJob.skills_required || !newJob.deadline) {
+      alert("Please fill all fields including deadline");
       return;
     }
 
@@ -47,7 +48,7 @@ export default function RecruiterDashboard() {
         },
       });
       alert("Job posted successfully!");
-      setNewJob({ role: "", company_name: "", description: "", skills_required: "" });
+      setNewJob({ role: "", company_name: "", description: "", skills_required: "", deadline: "" });
       setShowCreateJob(false);
       fetchJobs();
     } catch (err) {
@@ -79,7 +80,7 @@ export default function RecruiterDashboard() {
   const handleUpdateStatus = async (applicationId, newStatus) => {
     try {
       await axios.patch(
-        `http://127.0.0.1:8000/api/jobs/applications/${applicationId}/update-status/`,
+        `http://127.0.0.1:8000/api/jobs/update-status/${applicationId}/`,
         { status: newStatus },
         {
           headers: {
@@ -187,6 +188,16 @@ export default function RecruiterDashboard() {
               />
               <small className="help-text">Separate multiple skills with commas</small>
             </div>
+            <div className="form-group">
+              <label htmlFor="deadline">Application Deadline</label>
+              <input
+                id="deadline"
+                type="date"
+                value={newJob.deadline}
+                onChange={(e) => setNewJob({ ...newJob, deadline: e.target.value })}
+              />
+              <small className="help-text">Last date for applications</small>
+            </div>
             <div className="form-actions">
               <button className="submit-btn" onClick={handleCreateJob}>
                 Post Job
@@ -211,6 +222,11 @@ export default function RecruiterDashboard() {
               <div key={job.id} className="job-card">
                 <p className="job-role">{job.role}</p>
                 <p className="company-name">🏢 {job.company_name}</p>
+                {job.deadline && (
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                    📅 Deadline: {new Date(job.deadline).toLocaleDateString()}
+                  </p>
+                )}
 
                 <button
                   className="view-btn"
@@ -251,7 +267,8 @@ export default function RecruiterDashboard() {
               {sortedApplicants.map((app) => (
                 <div key={app.id} className="applicant-card">
                   <div className="applicant-info">
-                    <p className="applicant-name">👤 {app.student}</p>
+                    <p className="applicant-name">👤 {app.student.full_name || app.student.username}</p>
+                    <p className="applicant-email">{app.student.email}</p>
                     <p className="applicant-detail">
                       <strong>Match Score:</strong>{" "}
                       <span className="match-score">{app.match_score}%</span>
