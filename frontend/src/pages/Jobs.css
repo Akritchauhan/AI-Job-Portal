@@ -1,15 +1,30 @@
 .job-card {
-    border: 1px solid #ccc;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .job-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
   }
   
   .apply-btn {
-    margin-top: 10px;
-    padding: 6px 12px;
-    background-color: green;
+    margin-top: 1rem;
+    padding: 8px 20px;
+    background-color: var(--primary);
     color: white;
     border: none;
+    border-radius: 8px;
+    font-weight: 600;
     cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .apply-btn:hover {
+    background-color: var(--primary-hover);
   }

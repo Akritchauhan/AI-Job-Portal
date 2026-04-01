@@ -5,6 +5,7 @@ import Jobs from "./pages/Jobs";
 import MyApplications from "./pages/Myapplications";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
 import Navbar from "./Components/Navbar";
+{window.location.pathname !== "/" && <Navbar />}
 function App() {
   return (
     <BrowserRouter>

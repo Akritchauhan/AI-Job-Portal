@@ -1,27 +1,40 @@
 .app-container {
-    padding: 20px;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
   }
   
   .app-card {
-    border: 1px solid #ccc;
-    padding: 12px;
-    margin-bottom: 12px;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    background: var(--surface); /* Referencing variables from index.css */
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   
   .app-status {
-    font-weight: bold;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
   }
   
   .status-pending {
-    color: orange;
+    background-color: #fef3c7;
+    color: #92400e;
   }
   
   .status-selected {
-    color: green;
+    background-color: #d1fae5;
+    color: #065f46;
   }
   
   .status-rejected {
-    color: red;
+    background-color: #fee2e2;
+    color: #991b1b;
   }
