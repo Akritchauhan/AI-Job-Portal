@@ -6,6 +6,8 @@ import "./Jobs.css";
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [file, setFile] = useState(null);
+  const [sortBy, setSortBy] = useState("recent");
+  const [selectedJobForApply, setSelectedJobForApply] = useState(null);
 
   // 🔥 Fetch jobs
   useEffect(() => {
@@ -22,6 +24,26 @@ export default function Jobs() {
         alert("Failed to load jobs");
       });
   }, []);
+
+  // 🔥 Sort jobs
+  const getSortedJobs = () => {
+    let sorted = [...jobs];
+    
+    switch(sortBy) {
+      case "match-high":
+        sorted.sort((a, b) => (b.match_score || 0) - (a.match_score || 0));
+        break;
+      case "match-low":
+        sorted.sort((a, b) => (a.match_score || 0) - (b.match_score || 0));
+        break;
+      case "recent":
+        sorted.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+        break;
+      default:
+        break;
+    }
+    return sorted;
+  };
 
   // 🔥 Apply function
   const handleApply = async (jobId) => {
@@ -47,6 +69,7 @@ export default function Jobs() {
 
       alert("Applied! Match Score: " + res.data.match_score);
       setFile(null);
+      setSelectedJobForApply(null);
     } catch (err) {
       if (err.response) {
         alert("Error: " + JSON.stringify(err.response.data));
@@ -56,6 +79,8 @@ export default function Jobs() {
     }
   };
 
+  const sortedJobs = getSortedJobs();
+
   return (
     <div className="jobs-container">
       <div className="jobs-header">
@@ -64,24 +89,41 @@ export default function Jobs() {
       </div>
 
       <div className="jobs-actions">
-        <div></div>
+        <div className="sort-container">
+          <label htmlFor="sort-select">Sort by:</label>
+          <select 
+            id="sort-select"
+            value={sortBy} 
+            onChange={(e) => setSortBy(e.target.value)}
+            className="sort-select"
+          >
+            <option value="recent">Most Recent</option>
+            <option value="match-high">Best Match (High to Low)</option>
+            <option value="match-low">Best Match (Low to High)</option>
+          </select>
+        </div>
         <Link to="/my-applications" className="view-applications-link">
           📋 View My Applications
         </Link>
       </div>
 
-      {jobs.length === 0 ? (
+      {sortedJobs.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-icon">💼</div>
           <p>No jobs available at the moment. Check back soon!</p>
         </div>
       ) : (
         <div className="jobs-list">
-          {jobs.map((job) => (
+          {sortedJobs.map((job) => (
             <div key={job.id} className="job-card">
               <div className="job-header">
                 <h3 className="job-role">{job.role}</h3>
                 <p className="job-company">🏢 {job.company_name}</p>
+                {job.match_score !== null && job.match_score !== undefined && (
+                  <div className="match-score-badge">
+                    Match: {job.match_score}%
+                  </div>
+                )}
               </div>
 
               <div className="job-description">
@@ -89,21 +131,39 @@ export default function Jobs() {
               </div>
 
               <div className="job-apply-section">
-                <div className="file-input-wrapper">
-                  <input 
-                    type="file" 
-                    onChange={(e) => setFile(e.target.files[0])}
-                    accept=".pdf,.doc,.docx"
-                    title="Upload your resume (PDF, DOC, DOCX)"
-                  />
+                {selectedJobForApply === job.id ? (
+                  <div className="file-input-wrapper">
+                    <input 
+                      type="file" 
+                      onChange={(e) => setFile(e.target.files[0])}
+                      accept=".pdf,.doc,.docx"
+                      title="Upload your resume (PDF, DOC, DOCX)"
+                    />
+                    <button
+                      className="apply-btn"
+                      onClick={() => handleApply(job.id)}
+                      disabled={!file}
+                    >
+                      ✓ Apply Now
+                    </button>
+                    <button
+                      className="cancel-btn"
+                      onClick={() => {
+                        setSelectedJobForApply(null);
+                        setFile(null);
+                      }}
+                    >
+                      ✕ Cancel
+                    </button>
+                  </div>
+                ) : (
                   <button
-                    className="apply-btn"
-                    onClick={() => handleApply(job.id)}
-                    disabled={!file}
+                    className="apply-btn primary"
+                    onClick={() => setSelectedJobForApply(job.id)}
                   >
-                    ✓ Apply Now
+                    Apply To This Job
                   </button>
-                </div>
+                )}
               </div>
             </div>
           ))}

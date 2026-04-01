@@ -163,7 +163,7 @@ def applicants(request, job_id):
     serializer = ApplicationSerializer(applications, many=True)
     return Response(serializer.data)
 
-@api_view(['PUT'])
+@api_view(['PATCH', 'PUT'])
 @permission_classes([IsAuthenticated])
 def update_status(request, app_id):
 
@@ -181,8 +181,11 @@ def update_status(request, app_id):
 
     new_status = request.data.get('status')
 
-    if new_status not in ['selected', 'rejected']:
-        return Response({"error": "Invalid status"}, status=400)
+    # Allow all valid statuses
+    valid_statuses = ['pending', 'in_review', 'shortlisted', 'rejected', 'hired']
+    
+    if new_status not in valid_statuses:
+        return Response({"error": f"Invalid status. Must be one of: {', '.join(valid_statuses)}"}, status=400)
 
     application.status = new_status
     application.save()

@@ -4,9 +4,11 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
     navigate("/");
   };
 
@@ -20,31 +22,35 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <Link to="/jobs" className="navbar-brand">
-        💼 AI Job Portal
+        AI Job Portal
       </Link>
 
       <div className="nav-links">
         {!token ? (
-          // 🔥 Not logged in
           <>
-            <Link to="/" className={isActive("/") ? "active" : ""}>
+            <Link to="/" className={`nav-link ${isActive("/") ? "nav-link-active" : ""}`}>
               Login
             </Link>
-            <Link to="/register" className={isActive("/register") ? "active" : ""}>
+            <Link to="/register" className={`nav-link ${isActive("/register") ? "nav-link-active" : ""}`}>
               Register
             </Link>
           </>
-        ) : (
-          // 🔥 Logged in
+        ) : role === "student" ? (
           <>
-            <Link to="/jobs" className={isActive("/jobs") ? "active" : ""}>
+            <Link to="/jobs" className={`nav-link ${isActive("/jobs") ? "nav-link-active" : ""}`}>
               Browse Jobs
             </Link>
-            <Link to="/my-applications" className={isActive("/my-applications") ? "active" : ""}>
+            <Link to="/my-applications" className={`nav-link ${isActive("/my-applications") ? "nav-link-active" : ""}`}>
               My Applications
             </Link>
-            <Link to="/recruiter-dashboard" className={isActive("/recruiter-dashboard") ? "active" : ""}>
-              Recruiter
+            <Link to="/recruiter-dashboard" className={`nav-link ${isActive("/recruiter-dashboard") ? "nav-link-active" : ""}`}>
+              Post Job
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link to="/recruiter-dashboard" className={`nav-link ${isActive("/recruiter-dashboard") ? "nav-link-active" : ""}`}>
+              Dashboard
             </Link>
           </>
         )}
