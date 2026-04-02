@@ -6,7 +6,10 @@ import "./Register.css";
 export default function Register() {
   const [data, setData] = useState({
     username: "",
+    email: "",
     password: "",
+    first_name: "",
+    last_name: "",
     role: "student",
   });
 
@@ -41,6 +44,37 @@ export default function Register() {
           id="username"
           name="username"
           placeholder="Choose a username"
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="email">Email Address</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Enter your email address"
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="first_name">First Name</label>
+        <input
+          id="first_name"
+          name="first_name"
+          placeholder="Enter your first name"
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="last_name">Last Name</label>
+        <input
+          id="last_name"
+          name="last_name"
+          placeholder="Enter your last name"
           onChange={handleChange}
         />
       </div>
