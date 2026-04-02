@@ -29,12 +29,17 @@ def extract_text_from_pdf(file):
 
 
 # 🔹 Match Score
-def calculate_match_score(resume_text, job_description):
+def calculate_match_score(resume_text, job_description, skills_required=""):
     logger.info(f"📊 Calculating match score...")
     logger.info(f"   Resume length: {len(resume_text)} chars")
     logger.info(f"   Job description length: {len(job_description)} chars")
+    logger.info(f"   Skills required: {skills_required}")
     
-    if not resume_text or not job_description:
+    # Show first 200 chars of each for debugging
+    logger.info(f"   Resume text (first 200 chars): {resume_text[:200]}")
+    logger.info(f"   Job description (first 200 chars): {job_description[:200]}")
+    
+    if not resume_text or (not job_description and not skills_required):
         logger.warning("⚠️ Empty resume or job description")
         return 0.0
     
@@ -43,19 +48,35 @@ def calculate_match_score(resume_text, job_description):
         return 0.0
 
     try:
-        vectorizer = TfidfVectorizer(stop_words='english', min_df=1)
-        vectors = vectorizer.fit_transform([resume_text, job_description])
+        # 🔥 IMPORTANT: Combine job description + skills_required for better matching
+        # This ensures that required skills are weighted in the scoring
+        combined_job_text = f"{job_description} {skills_required}".strip()
+        
+        if not combined_job_text:
+            logger.warning("⚠️ No job description or skills after combining")
+            return 0.0
+        
+        logger.info(f"   Combined job text length: {len(combined_job_text)} chars")
+        
+        vectorizer = TfidfVectorizer(stop_words='english', min_df=1, lowercase=True)
+        vectors = vectorizer.fit_transform([resume_text, combined_job_text])
+        
+        logger.info(f"   Vectorizer created {len(vectorizer.get_feature_names_out())} features")
         
         # ✅ CORRECT WAY: Use 2D array slicing
-        score = cosine_similarity(vectors[0:1], vectors[1:2])
+        score_matrix = cosine_similarity(vectors[0:1], vectors[1:2])
+        score = score_matrix[0][0]
         
-        match_percentage = round(score[0][0] * 100, 2)
+        match_percentage = round(score * 100, 2)
         logger.info(f"✅ Match score calculated: {match_percentage}%")
+        logger.info(f"   Raw score: {score}")
         
         return match_percentage
         
     except Exception as e:
         logger.error(f"❌ Score calculation failed: {str(e)}")
+        import traceback
+        logger.error(traceback.format_exc())
         return 0.0
 
 
@@ -65,7 +86,8 @@ def recommend_jobs(resume_text, jobs):
         return []
 
     job_list = []
-    descriptions = [job.description or "" for job in jobs]
+    # 🔥 Combine description + skills for each job
+    descriptions = [f"{job.description or ''} {job.skills_required or ''}".strip() for job in jobs]
 
     vectorizer = TfidfVectorizer(stop_words='english')
     vectors = vectorizer.fit_transform([resume_text] + descriptions)

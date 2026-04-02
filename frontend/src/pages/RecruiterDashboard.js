@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./RecruiterDashboard.css";
 
 export default function RecruiterDashboard() {
@@ -8,6 +9,7 @@ export default function RecruiterDashboard() {
   const [selectedJobId, setSelectedJobId] = useState(null);
   const [showCreateJob, setShowCreateJob] = useState(false);
   const [sortBy, setSortBy] = useState("score-high");
+  const navigate = useNavigate();
   const [newJob, setNewJob] = useState({
     role: "",
     company_name: "",
@@ -15,6 +17,19 @@ export default function RecruiterDashboard() {
     skills_required: "",
     deadline: "",
   });
+
+  // 🔥 Role validation
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    
+    if (!token || role !== "recruiter") {
+      alert("Unauthorized! Only recruiters can access this page.");
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      navigate("/login");
+    }
+  }, [navigate]);
 
   // 🔥 Fetch recruiter jobs
   useEffect(() => {

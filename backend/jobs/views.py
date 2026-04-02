@@ -6,6 +6,7 @@ from .models import Application, Job
 from .serializers import ApplicationSerializer, JobSerializer
 from .utils import extract_text_from_pdf, calculate_match_score
 from .utils import recommend_jobs
+from .ai_ats import calculate_ai_ats_score
 import logging
 
 logger = logging.getLogger(__name__)
@@ -118,6 +119,13 @@ def apply_job(request, job_id):
     except Job.DoesNotExist:
         return Response({"error": "Job not found"}, status=404)
 
+    logger.info(f"📋 Job details:")
+    logger.info(f"   Role: {job.role}")
+    logger.info(f"   Company: {job.company_name}")
+    logger.info(f"   Description length: {len(job.description) if job.description else 0}")
+    logger.info(f"   Description (first 200 chars): {job.description[:200] if job.description else 'EMPTY'}")
+    logger.info(f"   Skills required: {job.skills_required}")
+
     resume_file = request.FILES.get('resume')
 
     if not resume_file:
@@ -136,10 +144,21 @@ def apply_job(request, job_id):
             "match_score": 0
         }, status=400)
     
-    logger.info(f"📝 Job description length: {len(job.description)} chars")
-    score = calculate_match_score(resume_text, job.description)
+    logger.info(f"📝 Resume extracted successfully - {len(resume_text)} chars")
     
-    logger.info(f"✅ Final score: {score}%")
+    # 🤖 Use AI-based ATS scoring
+    ats_result = calculate_ai_ats_score(
+        resume_text,
+        job.description or "",
+        job.skills_required or "",
+        experience_years=0
+    )
+    
+    score = ats_result['overall_score']
+    logger.info(f"✅ AI ATS Score: {score}%")
+    logger.info(f"   - Skill Match: {ats_result['skill_match']}%")
+    logger.info(f"   - Experience Match: {ats_result['experience_match']}%")
+    logger.info(f"   - Semantic Match: {ats_result['semantic_match']}%")
 
     application = Application.objects.create(
         student=request.user,
@@ -151,7 +170,16 @@ def apply_job(request, job_id):
     return Response({
         "message": "Applied successfully",
         "match_score": score,
-        "detail": f"Your resume matched {score}% with the job requirements"
+        "ai_ats_details": {
+            "overall_score": ats_result['overall_score'],
+            "skill_match": ats_result['skill_match'],
+            "experience_match": ats_result['experience_match'],
+            "semantic_match": ats_result['semantic_match'],
+            "matched_skills": ats_result['breakdown']['matched_skills'],
+            "missing_skills": ats_result['breakdown']['missing_skills'],
+            "recommendation": ats_result['recommendation']
+        },
+        "detail": f"Your resume scored {score}% with the job requirements. {ats_result['recommendation']}"
     })
 
 

@@ -8,8 +8,9 @@ export default function Login() {
   const [data, setData] = useState({
     username: "",
     password: "",
-    role: "student",
+    selectedRole: "student", // Add role selection
   });
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -23,23 +24,44 @@ export default function Login() {
       return;
     }
 
+    setLoading(true);
     try {
       const res = await axios.post("http://127.0.0.1:8000/api/login/", {
         username: data.username,
         password: data.password,
       });
-      localStorage.setItem("token", res.data.access);
-      localStorage.setItem("role", data.role);
-      alert("Login successful");
+
+      // Get actual role from backend response
+      const actualRole = res.data.role;
+      const selectedRole = data.selectedRole;
       
-      // Redirect based on role
-      if (data.role === "recruiter") {
+      // Validate that selected role matches actual user role
+      if (actualRole !== selectedRole) {
+        alert(`Error: You selected "${selectedRole}" but your account is registered as "${actualRole}". Please login as ${actualRole}.`);
+        setLoading(false);
+        return;
+      }
+      
+      // Store token and role from backend (validated against selection)
+      localStorage.setItem("token", res.data.access);
+      localStorage.setItem("role", actualRole);
+      localStorage.setItem("username", res.data.username);
+      
+      alert(res.data.message || "Login successful");
+      
+      // Redirect based on ACTUAL role from backend
+      if (actualRole === "recruiter") {
         navigate("/recruiter-dashboard");
-      } else {
+      } else if (actualRole === "student") {
         navigate("/jobs");
+      } else {
+        alert("Invalid user role");
+        navigate("/login");
       }
     } catch (err) {
       alert("Login failed: " + (err.response?.data?.detail || "Invalid credentials"));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,19 +69,6 @@ export default function Login() {
     <div className="auth-container">
       <h2>Welcome Back</h2>
       <p className="subtitle">Sign in to your account</p>
-      
-      <div className="form-group">
-        <label htmlFor="role">Login As</label>
-        <select 
-          id="role"
-          name="role"
-          value={data.role}
-          onChange={handleChange}
-        >
-          <option value="student">Student / Job Seeker</option>
-          <option value="recruiter">Recruiter / Employer</option>
-        </select>
-      </div>
 
       <div className="form-group">
         <label htmlFor="username">Username</label>
@@ -69,6 +78,7 @@ export default function Login() {
           placeholder="Enter your username" 
           onChange={handleChange}
           value={data.username}
+          disabled={loading}
         />
       </div>
 
@@ -81,11 +91,26 @@ export default function Login() {
           placeholder="Enter your password" 
           onChange={handleChange}
           value={data.password}
+          disabled={loading}
         />
       </div>
+
+      <div className="form-group">
+        <label htmlFor="selectedRole">Login As</label>
+        <select 
+          id="selectedRole"
+          name="selectedRole" 
+          onChange={handleChange}
+          value={data.selectedRole}
+          disabled={loading}
+        >
+          <option value="student">Student / Job Seeker</option>
+          <option value="recruiter">Recruiter</option>
+        </select>
+      </div>
     
-      <button className="auth-btn" onClick={handleLogin}>
-        Sign In
+      <button className="auth-btn" onClick={handleLogin} disabled={loading}>
+        {loading ? "Signing In..." : "Sign In"}
       </button>
 
       <p className="link-text">

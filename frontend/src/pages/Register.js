@@ -91,8 +91,13 @@ export default function Register() {
       </div>
 
       <div className="form-group">
-        <label htmlFor="role">Account Type</label>
-        <select id="role" name="role" onChange={handleChange}>
+        <label htmlFor="role">Register As:</label>
+        <select
+          id="role"
+          name="role"
+          value={data.role}
+          onChange={handleChange}
+        >
           <option value="student">Student / Job Seeker</option>
           <option value="recruiter">Recruiter / Employer</option>
         </select>

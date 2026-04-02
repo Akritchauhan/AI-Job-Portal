@@ -6,12 +6,20 @@ import "./Applicants.css";
 export default function Applicants() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
   
+  // 🔥 Role validation
   useEffect(() => {
     if (!token) {
       navigate("/");
+    } else if (role !== "recruiter") {
+      alert("Unauthorized! Only recruiters can access this page.");
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      navigate("/login");
     }
-  }, [token, navigate]);
+  }, [token, role, navigate]);
+
   const [applicants, setApplicants] = useState([]);
   const [filteredApplicants, setFilteredApplicants] = useState([]);
   const [loading, setLoading] = useState(true);

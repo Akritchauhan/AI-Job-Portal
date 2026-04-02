@@ -1,10 +1,25 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./MyApplications.css";
 
 export default function MyApplications() {
   const [applications, setApplications] = useState([]);
   const [filterStatus, setFilterStatus] = useState("all");
+  const navigate = useNavigate();
+
+  // 🔥 Role validation
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    
+    if (!token || role !== "student") {
+      alert("Unauthorized! Only students can access this page.");
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      navigate("/login");
+    }
+  }, [navigate]);
 
   useEffect(() => {
     axios

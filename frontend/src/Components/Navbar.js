@@ -22,7 +22,7 @@ export default function Navbar() {
     <nav className="navbar">
       {/* LEFT - LOGO */}
       <div className="nav-left">
-        <Link to="/jobs" className="navbar-brand">
+        <Link to={role === "recruiter" ? "/recruiter-dashboard" : "/jobs"} className="navbar-brand">
           AI Job Portal
         </Link>
       </div>

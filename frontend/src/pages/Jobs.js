@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";  
+import { Link, useNavigate } from "react-router-dom";  
 import "./Jobs.css";  
 
 export default function Jobs() {
@@ -10,6 +10,20 @@ export default function Jobs() {
   const [selectedJobForApply, setSelectedJobForApply] = useState(null);
   const [expandedCompany, setExpandedCompany] = useState(null);
   const [selectedJobDetail, setSelectedJobDetail] = useState(null);
+  const navigate = useNavigate();
+
+  // 🔥 Role validation
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    
+    if (!token || role !== "student") {
+      alert("Unauthorized! Only students can access this page.");
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      navigate("/login");
+    }
+  }, [navigate]);
 
   // 🔥 Fetch jobs
   useEffect(() => {
