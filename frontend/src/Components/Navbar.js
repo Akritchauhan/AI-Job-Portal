@@ -40,9 +40,14 @@ export default function Navbar() {
             <Link to="/my-applications" className={`nav-link ${isActive("/my-applications") ? "active" : ""}`}>My Applications</Link>
           </>
         ) : (
-          <Link to="/recruiter-dashboard" className={`nav-link ${isActive("/recruiter-dashboard") ? "active" : ""}`}>
-            Dashboard
-          </Link>
+          <>
+            <Link to="/recruiter-dashboard" className={`nav-link ${isActive("/recruiter-dashboard") ? "active" : ""}`}>
+              Dashboard
+            </Link>
+            <Link to="/view-applicants" className={`nav-link ${isActive("/view-applicants") ? "active" : ""}`}>
+              View Applicants
+            </Link>
+          </>
         )}
       </div>
 

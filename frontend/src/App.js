@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import Jobs from "./pages/Jobs";
 import MyApplications from "./pages/Myapplications";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
+import Applicants from "./pages/Applicants";
 import Navbar from "./Components/Navbar";
 {window.location.pathname !== "/" && <Navbar />}
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/my-applications" element={<MyApplications />} />
         <Route path="/recruiter-dashboard" element={<RecruiterDashboard />} />
+        <Route path="/view-applicants" element={<Applicants />} />
       </Routes>
     </BrowserRouter>
   );

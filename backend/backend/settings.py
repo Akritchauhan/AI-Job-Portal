@@ -130,9 +130,20 @@ USE_TZ = True
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'simple',
         },
     },
     'root': {
@@ -142,12 +153,17 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'accounts': {
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
         },
-        'accounts.email_service': {
+        'jobs': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': False,
         },
     },
@@ -164,7 +180,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # Email Configuration
 # For development, using console backend (prints emails to console)
-# Uncomment below and update for production with Gmail or other SMTP service
+# For production, using Gmail SMTP
 if DEBUG:
     # Development: Emails print to console
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -178,21 +194,4 @@ else:
     EMAIL_HOST_USER = '23206@iiitu.ac.in'  # Set your Gmail email
     EMAIL_HOST_PASSWORD = 'xtavzxitjfqpcezr'  # Set your Gmail app password
     DEFAULT_FROM_EMAIL = '23206@iiitu.ac.in'
-
-# Logging Configuration
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'accounts': {
-            'handlers': ['console'],
-            'level': 'INFO',
-        },
-    },
-}
 

@@ -6,6 +6,9 @@ from .models import Application, Job
 from .serializers import ApplicationSerializer, JobSerializer
 from .utils import extract_text_from_pdf, calculate_match_score
 from .utils import recommend_jobs
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @api_view(['POST'])
@@ -105,6 +108,8 @@ def update_status(request, app_id):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def apply_job(request, job_id):
+    logger.info(f"🔥 Student {request.user.username} applying for job {job_id}")
+    
     if request.user.role != 'student':
         return Response({"error": "Only students can apply"}, status=403)
 
@@ -116,11 +121,25 @@ def apply_job(request, job_id):
     resume_file = request.FILES.get('resume')
 
     if not resume_file:
+        logger.warning(f"⚠️ No resume file provided by {request.user.username}")
         return Response({"error": "Resume required"}, status=400)
+
+    logger.info(f"📄 Resume file received: {resume_file.name} ({resume_file.size} bytes)")
 
     # 🔥 Extract text + calculate score
     resume_text = extract_text_from_pdf(resume_file)
+    
+    if not resume_text:
+        logger.error(f"❌ Failed to extract text from resume: {resume_file.name}")
+        return Response({
+            "error": "Could not read resume. Please upload a valid PDF file.",
+            "match_score": 0
+        }, status=400)
+    
+    logger.info(f"📝 Job description length: {len(job.description)} chars")
     score = calculate_match_score(resume_text, job.description)
+    
+    logger.info(f"✅ Final score: {score}%")
 
     application = Application.objects.create(
         student=request.user,
@@ -131,7 +150,8 @@ def apply_job(request, job_id):
 
     return Response({
         "message": "Applied successfully",
-        "match_score": score
+        "match_score": score,
+        "detail": f"Your resume matched {score}% with the job requirements"
     })
 
 
@@ -143,4 +163,39 @@ def my_jobs(request):
 
     jobs = Job.objects.filter(posted_by=request.user)
     serializer = JobSerializer(jobs, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def all_recruiter_applicants(request):
+    """Get all applicants across all jobs posted by the recruiter"""
+    if request.user.role != 'recruiter':
+        return Response({"error": "Only recruiters allowed"}, status=403)
+
+    # Get all jobs posted by this recruiter
+    recruiter_jobs = Job.objects.filter(posted_by=request.user)
+    
+    # Get all applications for these jobs, ordered by score
+    applications = Application.objects.filter(job__in=recruiter_jobs).order_by('-match_score')
+    
+    # Apply optional filters
+    status = request.GET.get('status')
+    job_id = request.GET.get('job_id')
+    min_score = request.GET.get('min_score')
+    
+    if status:
+        applications = applications.filter(status=status)
+    
+    if job_id:
+        applications = applications.filter(job_id=job_id)
+    
+    if min_score:
+        try:
+            min_score = float(min_score)
+            applications = applications.filter(match_score__gte=min_score)
+        except (ValueError, TypeError):
+            pass
+    
+    serializer = ApplicationSerializer(applications, many=True)
     return Response(serializer.data)
