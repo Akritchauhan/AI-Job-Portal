@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useNotification } from "../contexts/NotificationContext";
 import "./Applicants.css";
 
 export default function Applicants() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
+  const { error, success } = useNotification();
   
   // 🔥 Role validation
   useEffect(() => {
     if (!token) {
       navigate("/");
     } else if (role !== "recruiter") {
-      alert("Unauthorized! Only recruiters can access this page.");
+      error("Unauthorized! Only recruiters can access this page.");
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       navigate("/login");
@@ -62,7 +64,7 @@ export default function Applicants() {
       setApplicants(res.data);
       setFilteredApplicants(res.data);
     } catch (err) {
-      alert("Failed to load applicants");
+      error("Failed to load applicants");
       console.error(err);
     } finally {
       setLoading(false);
@@ -136,9 +138,9 @@ export default function Applicants() {
         app.id === applicationId ? { ...app, status: newStatus } : app
       );
       setApplicants(updated);
-      alert("Status updated successfully!");
+      success("Status updated successfully!");
     } catch (err) {
-      alert("Failed to update status: " + JSON.stringify(err.response?.data || err.message));
+      error("Failed to update status: " + JSON.stringify(err.response?.data || err.message));
     }
   };
 

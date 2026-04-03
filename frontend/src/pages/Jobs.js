@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";  
+import { Link, useNavigate } from "react-router-dom";
+import { useNotification } from "../contexts/NotificationContext";  
 import "./Jobs.css";  
 
 export default function Jobs() {
@@ -11,6 +12,7 @@ export default function Jobs() {
   const [expandedCompany, setExpandedCompany] = useState(null);
   const [selectedJobDetail, setSelectedJobDetail] = useState(null);
   const navigate = useNavigate();
+  const { error, success } = useNotification();
 
   // 🔥 Role validation
   useEffect(() => {
@@ -18,7 +20,7 @@ export default function Jobs() {
     const role = localStorage.getItem("role");
     
     if (!token || role !== "student") {
-      alert("Unauthorized! Only students can access this page.");
+      error("Unauthorized! Only students can access this page.");
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       navigate("/login");
@@ -37,7 +39,7 @@ export default function Jobs() {
         setJobs(res.data);
       })
       .catch(() => {
-        alert("Failed to load jobs");
+        error("Failed to load jobs");
       });
   }, []);
 
@@ -76,7 +78,7 @@ export default function Jobs() {
   // 🔥 Apply function
   const handleApply = async (jobId) => {
     if (!file) {
-      alert("Please select a resume first");
+      error("Please select a resume first");
       return;
     }
 
@@ -95,14 +97,14 @@ export default function Jobs() {
         }
       );
 
-      alert("Applied! Match Score: " + res.data.match_score);
+      success("Applied! Match Score: " + res.data.match_score);
       setFile(null);
       setSelectedJobForApply(null);
     } catch (err) {
       if (err.response) {
-        alert("Error: " + JSON.stringify(err.response.data));
+        error("Error: " + JSON.stringify(err.response.data));
       } else {
-        alert("Application failed");
+        error("Application failed");
       }
     }
   };

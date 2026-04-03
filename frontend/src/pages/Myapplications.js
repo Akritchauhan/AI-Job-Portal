@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useNotification } from "../contexts/NotificationContext";
 import "./MyApplications.css";
 
 export default function MyApplications() {
   const [applications, setApplications] = useState([]);
   const [filterStatus, setFilterStatus] = useState("all");
   const navigate = useNavigate();
+  const { error } = useNotification();
 
   // 🔥 Role validation
   useEffect(() => {
@@ -14,7 +16,7 @@ export default function MyApplications() {
     const role = localStorage.getItem("role");
     
     if (!token || role !== "student") {
-      alert("Unauthorized! Only students can access this page.");
+      error("Unauthorized! Only students can access this page.");
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       navigate("/login");
@@ -32,7 +34,7 @@ export default function MyApplications() {
         setApplications(res.data);
       })
       .catch(() => {
-        alert("Failed to load applications");
+        error("Failed to load applications");
       });
   }, []);
 

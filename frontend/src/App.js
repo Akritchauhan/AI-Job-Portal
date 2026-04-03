@@ -6,20 +6,25 @@ import MyApplications from "./pages/Myapplications";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
 import Applicants from "./pages/Applicants";
 import Navbar from "./Components/Navbar";
-{window.location.pathname !== "/" && <Navbar />}
+import Notifications from "./Components/Notifications";
+import { NotificationProvider } from "./contexts/NotificationContext";
+
 function App() {
   return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/jobs" element={<Jobs />} />
-        <Route path="/my-applications" element={<MyApplications />} />
-        <Route path="/recruiter-dashboard" element={<RecruiterDashboard />} />
-        <Route path="/view-applicants" element={<Applicants />} />
-      </Routes>
-    </BrowserRouter>
+    <NotificationProvider>
+      <BrowserRouter>
+        <Navbar />
+        <Notifications />
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/jobs" element={<Jobs />} />
+          <Route path="/my-applications" element={<MyApplications />} />
+          <Route path="/recruiter-dashboard" element={<RecruiterDashboard />} />
+          <Route path="/view-applicants" element={<Applicants />} />
+        </Routes>
+      </BrowserRouter>
+    </NotificationProvider>
   );
 }
 

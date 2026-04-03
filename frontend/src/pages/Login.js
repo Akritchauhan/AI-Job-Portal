@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useNotification } from "../contexts/NotificationContext";
 import "./Login.css";
 
 export default function Login() {
@@ -11,6 +12,7 @@ export default function Login() {
     selectedRole: "student", // Add role selection
   });
   const [loading, setLoading] = useState(false);
+  const { error, success } = useNotification();
 
   const navigate = useNavigate();
 
@@ -20,7 +22,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (!data.username || !data.password) {
-      alert("Please enter both username and password");
+      error("Please enter both username and password");
       return;
     }
 
@@ -37,7 +39,7 @@ export default function Login() {
       
       // Validate that selected role matches actual user role
       if (actualRole !== selectedRole) {
-        alert(`Error: You selected "${selectedRole}" but your account is registered as "${actualRole}". Please login as ${actualRole}.`);
+        error(`Error: You selected "${selectedRole}" but your account is registered as "${actualRole}". Please login as ${actualRole}.`);
         setLoading(false);
         return;
       }
@@ -47,7 +49,7 @@ export default function Login() {
       localStorage.setItem("role", actualRole);
       localStorage.setItem("username", res.data.username);
       
-      alert(res.data.message || "Login successful");
+      success(res.data.message || "Login successful");
       
       // Redirect based on ACTUAL role from backend
       if (actualRole === "recruiter") {
@@ -55,11 +57,11 @@ export default function Login() {
       } else if (actualRole === "student") {
         navigate("/jobs");
       } else {
-        alert("Invalid user role");
+        error("Invalid user role");
         navigate("/login");
       }
     } catch (err) {
-      alert("Login failed: " + (err.response?.data?.detail || "Invalid credentials"));
+      error("Login failed: " + (err.response?.data?.detail || "Invalid credentials"));
     } finally {
       setLoading(false);
     }

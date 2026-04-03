@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { useNotification } from "../contexts/NotificationContext";
 import "./Register.css";
 
 export default function Register() {
@@ -14,6 +15,7 @@ export default function Register() {
   });
 
   const navigate = useNavigate();
+  const { success, error } = useNotification();
 
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -22,13 +24,13 @@ export default function Register() {
   const handleRegister = async () => {
     try {
       await axios.post("http://127.0.0.1:8000/api/register/", data);
-      alert("Registered successfully! Please log in.");
+      success("Registered successfully! Please log in.");
       navigate("/");
     } catch (err) {
       if (err.response) {
-        alert("Registration failed: " + JSON.stringify(err.response.data));
+        error("Registration failed: " + JSON.stringify(err.response.data));
       } else {
-        alert("Server not reachable");
+        error("Server not reachable");
       }
     }
   };

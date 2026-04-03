@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useNotification } from "../contexts/NotificationContext";
 import "./RecruiterDashboard.css";
 
 export default function RecruiterDashboard() {
@@ -10,6 +11,7 @@ export default function RecruiterDashboard() {
   const [showCreateJob, setShowCreateJob] = useState(false);
   const [sortBy, setSortBy] = useState("score-high");
   const navigate = useNavigate();
+  const { error, success } = useNotification();
   const [newJob, setNewJob] = useState({
     role: "",
     company_name: "",
@@ -24,7 +26,7 @@ export default function RecruiterDashboard() {
     const role = localStorage.getItem("role");
     
     if (!token || role !== "recruiter") {
-      alert("Unauthorized! Only recruiters can access this page.");
+      error("Unauthorized! Only recruiters can access this page.");
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       navigate("/login");
@@ -45,14 +47,14 @@ export default function RecruiterDashboard() {
       });
       setJobs(res.data);
     } catch {
-      alert("Failed to load jobs");
+      error("Failed to load jobs");
     }
   };
 
   // 🔥 Create new job
   const handleCreateJob = async () => {
     if (!newJob.role || !newJob.company_name || !newJob.description || !newJob.skills_required || !newJob.deadline) {
-      alert("Please fill all fields including deadline");
+      error("Please fill all fields including deadline");
       return;
     }
 
@@ -62,13 +64,13 @@ export default function RecruiterDashboard() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      alert("Job posted successfully!");
+      success("Job posted successfully!");
       setNewJob({ role: "", company_name: "", description: "", skills_required: "", deadline: "" });
       setShowCreateJob(false);
       fetchJobs();
     } catch (err) {
       const errorMsg = err.response?.data?.detail || err.response?.data?.error || err.response?.statusText || err.message;
-      alert("Failed to create job: " + errorMsg);
+      error("Failed to create job: " + errorMsg);
     }
   };
 
@@ -87,7 +89,7 @@ export default function RecruiterDashboard() {
       setSelectedJobId(jobId);
       setSortBy("score-high");
     } catch {
-      alert("Failed to load applicants");
+      error("Failed to load applicants");
     }
   };
 
@@ -103,13 +105,13 @@ export default function RecruiterDashboard() {
           },
         }
       );
-      alert("Status updated successfully!");
+      success("Status updated successfully!");
       // Refetch applicants to update the list
       if (selectedJobId) {
         getApplicants(selectedJobId);
       }
     } catch (err) {
-      alert("Failed to update status: " + JSON.stringify(err.response?.data || err.message));
+      error("Failed to update status: " + JSON.stringify(err.response?.data || err.message));
     }
   };
 
