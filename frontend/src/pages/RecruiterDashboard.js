@@ -31,7 +31,7 @@ export default function RecruiterDashboard() {
       localStorage.removeItem("role");
       navigate("/login");
     }
-  }, [navigate]);
+  }, [navigate, error]);
 
   // 🔥 Fetch recruiter jobs
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function RecruiterDashboard() {
 
   const fetchJobs = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/jobs/my-jobs/", {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/jobs/my-jobs/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -59,7 +59,7 @@ export default function RecruiterDashboard() {
     }
 
     try {
-      await axios.post("http://127.0.0.1:8000/api/jobs/post/", newJob, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/jobs/post/`, newJob, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -78,7 +78,7 @@ export default function RecruiterDashboard() {
   const getApplicants = async (jobId) => {
     try {
       const res = await axios.get(
-        `http://127.0.0.1:8000/api/jobs/applicants/${jobId}/`,
+        `${process.env.REACT_APP_API_URL}/jobs/applicants/${jobId}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -97,7 +97,7 @@ export default function RecruiterDashboard() {
   const handleUpdateStatus = async (applicationId, newStatus) => {
     try {
       await axios.patch(
-        `http://127.0.0.1:8000/api/jobs/update-status/${applicationId}/`,
+        `${process.env.REACT_APP_API_URL}/jobs/update-status/${applicationId}/`,
         { status: newStatus },
         {
           headers: {
@@ -133,10 +133,12 @@ export default function RecruiterDashboard() {
   };
 
   const getStatusClass = (status) => {
+    if (!status) return 'status-pending';
     return `status-${status.toLowerCase().replace(/_/g, '-')}`;
   };
 
   const getStatusLabel = (status) => {
+    if (!status) return 'Pending';
     return status
       .split('_')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -284,8 +286,8 @@ export default function RecruiterDashboard() {
               {sortedApplicants.map((app) => (
                 <div key={app.id} className="applicant-card">
                   <div className="applicant-info">
-                    <p className="applicant-name">👤 {app.student.full_name || app.student.username}</p>
-                    <p className="applicant-email">{app.student.email}</p>
+                    <p className="applicant-name">👤 {app.student?.full_name || app.student?.username || 'Unknown Applicant'}</p>
+                    <p className="applicant-email">{app.student?.email || 'No email provided'}</p>
                     <p className="applicant-detail">
                       <strong>Match Score:</strong>{" "}
                       <span className="match-score">{app.match_score}%</span>

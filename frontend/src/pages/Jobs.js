@@ -30,7 +30,7 @@ export default function Jobs() {
   // 🔥 Fetch jobs
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/jobs/", {
+      .get(`${process.env.REACT_APP_API_URL}/jobs/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -87,7 +87,7 @@ export default function Jobs() {
 
     try {
       const res = await axios.post(
-        `http://127.0.0.1:8000/api/jobs/apply/${jobId}/`,
+        `${process.env.REACT_APP_API_URL}/jobs/apply/${jobId}/`,
         formData,
         {
           headers: {

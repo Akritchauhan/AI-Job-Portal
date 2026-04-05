@@ -25,7 +25,7 @@ export default function MyApplications() {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/jobs/my-applications/", {
+      .get(`${process.env.REACT_APP_API_URL}/jobs/my-applications/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

@@ -23,7 +23,7 @@ export default function Register() {
 
   const handleRegister = async () => {
     try {
-      await axios.post("http://127.0.0.1:8000/api/register/", data);
+      await axios.post(`${process.env.REACT_APP_API_URL}/register/`, data);
       success("Registered successfully! Please log in.");
       navigate("/");
     } catch (err) {

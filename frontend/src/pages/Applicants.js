@@ -39,7 +39,7 @@ export default function Applicants() {
 
   const fetchJobs = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/jobs/my-jobs/", {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/jobs/my-jobs/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -54,7 +54,7 @@ export default function Applicants() {
     setLoading(true);
     try {
       const res = await axios.get(
-        "http://127.0.0.1:8000/api/jobs/all-applicants/",
+        `${process.env.REACT_APP_API_URL}/jobs/all-applicants/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -125,7 +125,7 @@ export default function Applicants() {
   const handleUpdateStatus = async (applicationId, newStatus) => {
     try {
       await axios.patch(
-        `http://127.0.0.1:8000/api/jobs/update-status/${applicationId}/`,
+        `${process.env.REACT_APP_API_URL}/jobs/update-status/${applicationId}/`,
         { status: newStatus },
         {
           headers: {
@@ -148,7 +148,7 @@ export default function Applicants() {
   const downloadResume = (resumeUrl, studentName) => {
     if (resumeUrl) {
       const link = document.createElement("a");
-      link.href = `http://127.0.0.1:8000${resumeUrl}`;
+      link.href = `${process.env.REACT_APP_BACKEND_URL}${resumeUrl}`;
       link.download = `${studentName}_resume.pdf`;
       document.body.appendChild(link);
       link.click();
