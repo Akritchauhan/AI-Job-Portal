@@ -187,8 +187,15 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = 'media/'
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-CORS_ALLOW_ALL_ORIGINS = True
-
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://ai-job-portal-gules.vercel.app",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "https://ai-job-portal-gules.vercel.app",
+]
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
