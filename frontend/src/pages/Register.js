@@ -13,6 +13,7 @@ export default function Register() {
     last_name: "",
     role: "student",
   });
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { success, error } = useNotification();
@@ -22,6 +23,7 @@ export default function Register() {
   };
 
   const handleRegister = async () => {
+    setLoading(true);
     try {
       await axios.post(`${process.env.REACT_APP_API_URL}/register/`, data);
       success("Registered successfully! Please log in.");
@@ -32,6 +34,8 @@ export default function Register() {
       } else {
         error("Server not reachable");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,14 +103,21 @@ export default function Register() {
           name="role"
           value={data.role}
           onChange={handleChange}
+          disabled={loading}
         >
           <option value="student">Student / Job Seeker</option>
           <option value="recruiter">Recruiter / Employer</option>
         </select>
       </div>
 
-      <button className="auth-btn" onClick={handleRegister}>
-        Create Account
+      <button className="auth-btn" onClick={handleRegister} disabled={loading}>
+        {loading ? (
+          <>
+            <span className="spinner"></span> Registering...
+          </>
+        ) : (
+          "Create Account"
+        )}
       </button>
 
       <p className="link-text">

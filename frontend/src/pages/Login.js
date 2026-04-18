@@ -112,7 +112,13 @@ export default function Login() {
       </div>
     
       <button className="auth-btn" onClick={handleLogin} disabled={loading}>
-        {loading ? "Signing In..." : "Sign In"}
+        {loading ? (
+          <>
+            <span className="spinner"></span> Signing In...
+          </>
+        ) : (
+          "Sign In"
+        )}
       </button>
 
       <p className="link-text">
