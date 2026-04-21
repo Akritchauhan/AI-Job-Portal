@@ -3,8 +3,24 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 import logging
+import threading
 
 logger = logging.getLogger(__name__)
+
+def _send_email_thread(subject, plain_message, from_email, recipient_list, html_message):
+    try:
+        logger.info(f"Sending welcome email to {recipient_list[0]}")
+        send_mail(
+            subject=subject,
+            message=plain_message,
+            from_email=from_email,
+            recipient_list=recipient_list,
+            html_message=html_message,
+            fail_silently=False,
+        )
+        logger.info(f"Welcome email sent successfully to {recipient_list[0]}")
+    except Exception as e:
+        logger.error(f"Error sending welcome email to {recipient_list[0]}: {str(e)}", exc_info=True)
 
 
 def send_welcome_email(user):
@@ -49,18 +65,11 @@ def send_welcome_email(user):
     print(f"Email Backend: {settings.EMAIL_BACKEND}")
     print(f"{'='*60}\n")
     
-    try:
-        logger.info(f"Sending welcome email to {user.email}")
-        send_mail(
-            subject=subject,
-            message=plain_message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-            html_message=html_message,
-            fail_silently=False,
-        )
-        logger.info(f"Welcome email sent successfully to {user.email}")
-        return True
-    except Exception as e:
-        logger.error(f"Error sending welcome email to {user.email}: {str(e)}", exc_info=True)
-        return False
+    # Start the email sending in a background thread
+    email_thread = threading.Thread(
+        target=_send_email_thread,
+        args=(subject, plain_message, settings.DEFAULT_FROM_EMAIL, [user.email], html_message)
+    )
+    email_thread.start()
+    
+    return True

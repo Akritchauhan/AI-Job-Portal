@@ -12,44 +12,49 @@ html {
 }
 
 :root {
-  /* Premium Dashboard Color Palette */
-  --primary: #4f46e5;       /* Indigo 600 */
-  --primary-hover: #4338ca; /* Indigo 700 */
-  --primary-light: #e0e7ff; /* Indigo 100 */
-  --primary-soft: rgba(79, 70, 229, 0.1);
-  --secondary: #0f172a;     /* Slate 900 */
+  /* Eye-Friendly Color Palette - High Contrast & Comfortable */
+  --primary: #0e7360;       /* Deep Teal - Soothing, professional */
+  --primary-hover: #085c4a; /* Darker teal for hover */
+  --primary-light: #d0fdf8; /* Very light teal */
+  --primary-soft: rgba(14, 115, 96, 0.08);
+  --secondary: #6b4ba3;     /* Muted violet - Less intense */
+  --secondary-light: #ede9fe;
+  --accent: #d97706;        /* Golden amber - Warm, less harsh */
+  --accent-light: #fef3c7;
   
-  /* Backgrounds */
-  --bg-main: #f4f7fe;       /* Soft modern gray/blue background */
+  /* Backgrounds - Eye-Friendly */
+  --bg-main: #f8fafc;       /* Soft cool gray-blue - reduces eye strain */
   --bg-card: #ffffff;
   --bg-hover: #f1f5f9;
+  --bg-secondary: #faf5ff;  /* Very soft lavender */
   
-  /* Text */
-  --text-main: #0f172a;
-  --text-dark: #334155;
-  --text-muted: #64748b;
-  --text-light: #94a3b8;
+  /* Text - High Contrast for Readability */
+  --text-main: #1a202c;     /* Deep charcoal - better than pure black */
+  --text-dark: #2d3748;     /* Strong gray - clear contrast */
+  --text-muted: #4a5568;    /* Medium gray - still readable */
+  --text-light: #718096;    /* Lighter gray for secondary info */
   
-  /* Status Colors */
-  --success: #10b981;
+  /* Status Colors - Accessible & Warm */
+  --success: #059669;       /* Comfortable green */
   --success-bg: #ecfdf5;
-  --warning: #f59e0b;
+  --warning: #d97706;       /* Warm amber */
   --warning-bg: #fffbeb;
-  --danger: #ef4444;
+  --danger: #dc2626;        /* Softer red */
   --danger-bg: #fef2f2;
-  --info: #3b82f6;
-  --info-bg: #eff6ff;
+  --info: #0284c7;          /* Calming blue */
+  --info-bg: #f0f9ff;
 
   /* Borders & Dividers */
-  --border-color: #e2e8f0;
-  --divider: #f1f5f9;
+  --border-color: #cbd5e1;
+  --border-light: #e2e8f0;
+  --divider: #e8eef7;
   
-  /* Modern Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.02);
-  --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-  --shadow-glow: 0 0 15px rgba(79, 70, 229, 0.3);
+  /* Modern Shadows - Softer */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 12px 20px -3px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 20px 30px -5px rgba(14, 115, 96, 0.12);
+  --shadow-glow: 0 0 16px rgba(14, 115, 96, 0.2);
 
   /* Border Radius */
   --radius-sm: 8px;
@@ -60,36 +65,41 @@ html {
 
   /* Transitions */
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
   background-color: var(--bg-main);
   color: var(--text-dark);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.7;
+  letter-spacing: 0.3px;
   min-height: 100vh;
-  /* Add subtle background pattern for premium feel */
-  background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
-  background-size: 32px 32px;
+  /* Enhanced background with softer gradient */
+  background: linear-gradient(135deg, var(--bg-main) 0%, #f0f9ff 100%);
   background-attachment: fixed;
+  font-weight: 400;
 }
 
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
   color: var(--text-main);
   font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.3;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 1.875rem; }
-h3 { font-size: 1.5rem; }
+h1 { font-size: 2.5rem; font-weight: 800; }
+h2 { font-size: 1.95rem; font-weight: 800; }
+h3 { font-size: 1.5rem; font-weight: 700; }
+h4 { font-size: 1.25rem; font-weight: 600; }
+h5 { font-size: 1.1rem; font-weight: 600; }
 
 p {
   color: var(--text-muted);
+  line-height: 1.75;
+  letter-spacing: 0.2px;
 }
 
 a {
@@ -106,11 +116,13 @@ a:hover {
 button {
   font-family: inherit;
   outline: none;
+  letter-spacing: 0.3px;
 }
 
 input, select, textarea {
   font-family: inherit;
   font-size: 0.95rem;
+  letter-spacing: 0.2px;
 }
 
 /* Premium Glassmorphism Utility */
@@ -153,13 +165,104 @@ input, select, textarea {
   }
 }
 
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @keyframes pulse-soft {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.8; transform: scale(0.98); }
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 10px rgba(13, 148, 136, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 20px rgba(13, 148, 136, 0.6);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
 .animate-fade-in-up {
-  animation: fadeInUp 0.5s ease-out forwards;
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.6s ease-out forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.6s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.6s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s ease-out forwards;
+}
+
+.animate-glow {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
 
 /* Spinner Utility */

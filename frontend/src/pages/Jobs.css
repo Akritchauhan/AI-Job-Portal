@@ -12,17 +12,21 @@
 
 .jobs-header h2 {
   font-size: 2.5rem;
-  background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
   display: inline-block;
+  font-weight: 800;
 }
 
 .jobs-header p {
   color: var(--text-muted);
   font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.7;
+  letter-spacing: 0.3px;
 }
 
 .jobs-actions {
@@ -32,12 +36,12 @@
   margin-bottom: 2rem;
   flex-wrap: wrap;
   gap: 1rem;
-  background: rgba(255, 255, 255, 0.6);
-  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.75);
+  padding: 1.25rem 1.75rem;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1.5px solid rgba(14, 115, 96, 0.1);
 }
 
 .sort-container {
@@ -47,21 +51,23 @@
 }
 
 .sort-container label {
-  font-weight: 600;
-  color: var(--text-dark);
+  font-weight: 700;
+  color: var(--text-main);
   font-size: 0.95rem;
+  letter-spacing: 0.3px;
 }
 
 .sort-select {
-  padding: 10px 16px;
+  padding: 11px 16px;
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-pill);
-  background-color: rgba(255, 255, 255, 0.9);
-  color: var(--text-dark);
-  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: var(--text-main);
+  font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-base);
   font-size: 0.9rem;
+  letter-spacing: 0.2px;
 }
 
 .sort-select:hover,
@@ -75,21 +81,37 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px;
-  background-color: var(--primary-soft);
-  color: var(--primary-hover);
+  padding: 12px 26px;
+  background: linear-gradient(135deg, var(--primary-soft), var(--secondary-light));
+  color: var(--primary);
   border-radius: var(--radius-pill);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   transition: all var(--transition-base);
-  border: 1px solid var(--primary-light);
+  border: 2px solid var(--primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.view-applications-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-base);
+  z-index: -1;
 }
 
 .view-applications-link:hover {
-  background-color: var(--primary);
   color: white;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.3);
+  transform: translateY(-3px);
+}
+
+.view-applications-link:hover::before {
+  transform: scaleX(1);
 }
 
 .jobs-list {
@@ -98,19 +120,38 @@
 }
 
 .job-card {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 1.75rem;
+  border: 1.5px solid rgba(14, 115, 96, 0.15);
+  padding: 2rem;
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
   transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.job-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-base);
 }
 
 .job-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(14, 115, 96, 0.12);
   border-color: var(--primary-light);
+}
+
+.job-card:hover::before {
+  transform: scaleX(1);
 }
 
 .job-header {
@@ -120,40 +161,53 @@
 
 .job-role {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text-main);
   margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
 }
 
 .job-company {
   font-size: 0.95rem;
   color: var(--primary);
-  font-weight: 600;
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 6px;
+  letter-spacing: 0.3px;
 }
 
 .match-score-badge {
   display: inline-block;
   margin-top: 0.75rem;
   padding: 6px 14px;
-  background-color: var(--primary-soft);
+  background: linear-gradient(135deg, var(--primary-soft), var(--secondary-light));
   color: var(--primary);
   border-radius: var(--radius-pill);
   font-size: 0.85rem;
   font-weight: 700;
-  border: 1px solid var(--primary-light);
+  border: 1.5px solid var(--primary-light);
+  transition: all var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.match-score-badge:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
 }
 
 .job-description {
   margin: 1rem 0;
   color: var(--text-muted);
-  line-height: 1.6;
-  padding: 1rem;
+  line-height: 1.75;
+  letter-spacing: 0.2px;
+  padding: 1.25rem;
   background: var(--bg-hover);
   border-left: 4px solid var(--primary);
   border-radius: 4px 8px 8px 4px;
+  font-weight: 500;
 }
 
 .job-meta {
@@ -171,15 +225,17 @@
 
 .job-meta-label {
   font-size: 0.85rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text-light);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .job-meta-value {
-  color: var(--text-dark);
-  font-weight: 500;
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.2px;
 }
 
 .job-apply-section {
@@ -226,18 +282,32 @@
 .apply-btn {
   flex: 0 0 auto;
   padding: 12px 28px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   color: white;
   border: none;
   border-radius: var(--radius-pill);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
   transition: all var(--transition-base);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 4px 15px rgba(13, 148, 136, 0.3);
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.apply-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left var(--transition-base);
+  border-radius: var(--radius-pill);
 }
 
 .apply-btn.primary {
@@ -246,15 +316,24 @@
 }
 
 .apply-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(13, 148, 136, 0.4);
+}
+
+.apply-btn:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+.apply-btn:active:not(:disabled) {
+  transform: translateY(-1px);
 }
 
 .apply-btn:disabled {
-  background: var(--border-color);
+  background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
   color: var(--text-light);
   cursor: not-allowed;
   box-shadow: none;
+  opacity: 0.6;
 }
 
 .cancel-btn {
@@ -262,22 +341,43 @@
   padding: 12px 28px;
   background-color: transparent;
   color: var(--danger);
-  border: 1.5px solid var(--danger);
+  border: 2px solid var(--danger);
   border-radius: var(--radius-pill);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
   transition: all var(--transition-base);
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cancel-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--danger);
+  transition: left var(--transition-base);
+  z-index: -1;
 }
 
 .cancel-btn:hover {
-  background-color: var(--danger);
   color: white;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+  transform: translateY(-3px);
+}
+
+.cancel-btn:hover::before {
+  left: 0;
+}
+
+.cancel-btn:active {
+  transform: translateY(-1px);
 }
 
 .empty-state {
